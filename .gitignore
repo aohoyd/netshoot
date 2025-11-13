@@ -1,0 +1,6 @@
+packages-*/
+APKINDEX.tar.gz
+*.apk
+*.tar
+*.spdx.json
+*.key

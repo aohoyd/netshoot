@@ -1,0 +1,23 @@
+package:
+  name: config
+  version: 0.0.1
+  epoch: 0
+  description: Custom fish config
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime: []
+  target-architecture:
+    - x86_64
+    - aarch64
+
+environment:
+  contents:
+    repositories:
+      - https://dl-cdn.alpinelinux.org/alpine/edge/main
+    packages:
+      - busybox
+
+pipeline:
+  - runs: |
+      install -Dm644 config.fish "${{targets.destdir}}/root/.config/fish/config.fish"

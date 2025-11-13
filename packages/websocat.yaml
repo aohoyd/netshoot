@@ -1,0 +1,45 @@
+package:
+  name: websocat
+  version: 1.14.0
+  epoch: 0
+  description: Netcat, curl and socat for WebSockets
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime: []
+  target-architecture:
+    - x86_64
+    - aarch64
+
+environment:
+  contents:
+    repositories:
+      - https://dl-cdn.alpinelinux.org/alpine/edge/main
+    packages:
+      - busybox
+      - ca-certificates-bundle
+
+pipeline:
+  - uses: fetch
+    if: ${{build.arch}} == 'x86_64'
+    with:
+      uri: https://github.com/vi/websocat/releases/download/v${{package.version}}/websocat_max.${{build.arch}}-unknown-linux-musl
+      extract: false
+      expected-sha256: 8e84d1e3e62bd1cfd42e46a36454c2a58d4d8cca4baa6cb5e7dd7ba2e63cb34b
+
+  - uses: fetch
+    if: ${{build.arch}} == 'aarch64'
+    with:
+      uri: https://github.com/vi/websocat/releases/download/v${{package.version}}/websocat_max.${{build.arch}}-unknown-linux-musl
+      extract: false
+      expected-sha256: 7b554537b7b046caf598a0db4ee95016e4d2899595c71a403d73ff5ad9f0cbed
+
+  - runs: |
+      install -Dm755 websocat_max.${{build.arch}}-unknown-linux-musl "${{targets.destdir}}/usr/bin/websocat"
+
+update:
+  enabled: true
+  github:
+    identifier: vi/websocat
+    strip-prefix: v
+    use-tag: true

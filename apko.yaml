@@ -1,0 +1,83 @@
+contents:
+  repositories:
+    - https://dl-cdn.alpinelinux.org/alpine/v3.22/main
+    - https://dl-cdn.alpinelinux.org/alpine/v3.22/community
+    - https://dl-cdn.alpinelinux.org/alpine/edge/testing
+    - '@local packages'
+  packages:
+    - alpine-base
+    - ca-certificates-bundle
+    - apache2-utils
+    - bash
+    - bind-tools
+    - bird
+    - conntrack-tools
+    - curl
+    - dhcping
+    - drill
+    - ethtool
+    - file
+    - fish
+    - fping
+    - helix
+    - iftop
+    - iperf
+    - iperf3
+    - iproute2
+    - ipset
+    - iptables
+    - iputils
+    - ipvsadm
+    - jq
+    - liboping
+    - ltrace
+    - mtr
+    - net-snmp-tools
+    - netcat-openbsd
+    - nftables
+    - ngrep
+    - nmap
+    - nmap-nping
+    - nmap-scripts
+    - openssl
+    - py3-pip
+    - py3-setuptools
+    - socat
+    - openssh
+    - strace
+    - tcpdump
+    - tcptraceroute
+    - tshark
+    - util-linux
+    - xh
+    - yq
+    - git
+    - swaks
+    - cdebug@local
+    - config@local
+    - duf@local
+    - dust@local
+    - grpcurl@local
+    - iptraf-ng@local
+    - scapy@local
+    - termshark@local
+    - trippy@local
+    - websocat@local
+
+archs:
+  - x86_64
+  - aarch64
+
+cmd: /usr/bin/fish -l
+
+work-dir: /root
+
+paths:
+  - path: /usr/bin/dumpcap
+    type: permissions
+    uid: 0
+    gid: 0
+    permissions: 0o755
+
+environment:
+  PATH: /usr/sbin:/sbin:/usr/bin:/bin

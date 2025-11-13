@@ -1,0 +1,44 @@
+package:
+  name: termshark
+  version: 2.4.0
+  epoch: 0
+  description: A terminal user-interface for tshark, inspired by Wireshark
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - tshark
+  target-architecture:
+    - x86_64
+    - aarch64
+
+environment:
+  contents:
+    repositories:
+      - https://dl-cdn.alpinelinux.org/alpine/edge/main
+    packages:
+      - busybox
+      - ca-certificates-bundle
+
+pipeline:
+  - uses: fetch
+    if: ${{build.arch}} == 'x86_64'
+    with:
+      uri: https://github.com/gcla/termshark/releases/download/v${{package.version}}/termshark_${{package.version}}_linux_x64.tar.gz
+      expected-sha256: a28b2ab534ba8bf2297bbe9846281e62aa0010832b75773369e0d48912acef74
+
+  - uses: fetch
+    if: ${{build.arch}} == 'aarch64'
+    with:
+      uri: https://github.com/gcla/termshark/releases/download/v${{package.version}}/termshark_${{package.version}}_linux_arm64.tar.gz
+      expected-sha256: 6dc3003a48291c463f057d0151727e0d21e295d804f082f3d35d72fd94d0a56e
+
+  - runs: |
+      install -Dm755 termshark "${{targets.destdir}}/usr/bin/termshark"
+
+update:
+  enabled: true
+  github:
+    identifier: gcla/termshark
+    strip-prefix: v
+    use-tag: true

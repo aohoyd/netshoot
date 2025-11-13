@@ -1,0 +1,44 @@
+package:
+  name: duf
+  version: 0.9.1
+  epoch: 0
+  description: Disk Usage/Free Utility
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime: []
+  target-architecture:
+    - x86_64
+    - aarch64
+
+environment:
+  contents:
+    repositories:
+      - https://dl-cdn.alpinelinux.org/alpine/edge/main
+    packages:
+      - busybox
+      - ca-certificates-bundle
+
+pipeline:
+  - uses: fetch
+    if: ${{build.arch}} == 'x86_64'
+    with:
+      uri: https://github.com/muesli/duf/releases/download/v${{package.version}}/duf_${{package.version}}_linux_${{build.arch}}.tar.gz
+      strip-components: 0
+      expected-sha256: 5add851e7062c5e56939abb664705e4d14fa2d06289490aff31d51f153832de7
+
+  - uses: fetch
+    if: ${{build.arch}} == 'aarch64'
+    with:
+      uri: https://github.com/muesli/duf/releases/download/v${{package.version}}/duf_${{package.version}}_linux_arm64.tar.gz
+      strip-components: 0
+      expected-sha256: 22ea0ad29f6610bf443aa351e600de97e47a9b380ef58316606a84bb8f595216
+
+  - runs: |
+      install -Dm755 duf "${{targets.destdir}}/usr/bin/duf"
+
+update:
+  enabled: true
+  github:
+    identifier: muesli/duf
+    use-tag: true

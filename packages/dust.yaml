@@ -1,0 +1,42 @@
+package:
+  name: dust
+  version: 1.2.3
+  epoch: 0
+  description: du + rust = dust. Like du but more intuitive
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime: []
+  target-architecture:
+    - x86_64
+    - aarch64
+
+environment:
+  contents:
+    repositories:
+      - https://dl-cdn.alpinelinux.org/alpine/edge/main
+    packages:
+      - busybox
+      - ca-certificates-bundle
+
+pipeline:
+  - uses: fetch
+    if: ${{build.arch}} == 'x86_64'
+    with:
+      uri: https://github.com/bootandy/dust/releases/download/v${{package.version}}/dust-v${{package.version}}-${{build.arch}}-unknown-linux-musl.tar.gz
+      expected-sha256: 2767e53a07a6f887c95d80dc7b976fbb0f85c24fa19e83704639ff5d67ebfbf4
+
+  - uses: fetch
+    if: ${{build.arch}} == 'aarch64'
+    with:
+      uri: https://github.com/bootandy/dust/releases/download/v${{package.version}}/dust-v${{package.version}}-${{build.arch}}-unknown-linux-musl.tar.gz
+      expected-sha256: 02b6db1fca7fbb2137f961619f2b1498b26cb3b3cbd3ec3cc3cf23907a354c18
+
+  - runs: |
+      install -Dm755 dust "${{targets.destdir}}/usr/bin/dust"
+
+update:
+  enabled: true
+  github:
+    identifier: bootandy/dust
+    use-tag: true

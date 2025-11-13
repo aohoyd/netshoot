@@ -1,0 +1,48 @@
+package:
+  name: iptraf-ng
+  version: 1.2.2
+  epoch: 0
+  description: A console-based network monitoring program for Linux that displays information about IP traffic
+  copyright:
+    - license: GPL-2.0-or-later
+  dependencies:
+    runtime:
+      - ncurses
+  target-architecture:
+    - x86_64
+    - aarch64
+
+environment:
+  contents:
+    repositories:
+      - https://dl-cdn.alpinelinux.org/alpine/edge/main
+    packages:
+      - build-base
+      - busybox
+      - ca-certificates-bundle
+      - ncurses-dev
+      - linux-headers
+
+pipeline:
+  - uses: git-checkout
+    with:
+      repository: https://github.com/iptraf-ng/iptraf-ng
+      tag: v${{package.version}}
+      expected-commit: 639850ddfff0e10ad073457b827422f0cc2e2989
+
+  - uses: autoconf/make
+
+  - uses: autoconf/make-install
+
+  - uses: strip
+
+  - runs: |
+      install -Dm755 "${{targets.destdir}}/home/build/sbin/iptraf-ng" "${{targets.destdir}}/usr/bin/iptraf-ng"
+      rm -rf ${{targets.destdir}}/home
+
+update:
+  enabled: true
+  github:
+    identifier: iptraf-ng/iptraf-ng
+    strip-prefix: v
+    use-tag: true

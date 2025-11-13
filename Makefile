@@ -1,21 +1,36 @@
-.PHONY: build-x86 build-arm64 push all
-
 # Build Vars
-IMAGENAME=nicolaka/netshoot
-VERSION=0.1
+IMAGENAME = aohoyd/netshoot
+VERSION = 0.1
 
+PACKAGES_DIR = packages
+PACKAGE_YAMLS := $(wildcard $(PACKAGES_DIR)/*.yaml)
+PACKAGE_NAMES := $(basename $(notdir $(PACKAGE_YAMLS)))
 
-.DEFAULT_GOAL := all
+.DEFAULT_GOAL = all
 
-build-x86:
-	    @docker build --platform linux/amd64 -t ${IMAGENAME}:${VERSION} .
-build-arm64:
-		@docker build --platform linux/arm64 -t ${IMAGENAME}:${VERSION} .
-build-all:
-		@docker buildx build --platform linux/amd64,linux/arm64 --output "type=image,push=false" --file ./Dockerfile .
-push:
-	 	@docker push ${IMAGENAME}:${VERSION} 
-all: build-all push
+.PHONY: build-packages build all $(PACKAGE_NAMES)
 
+all:
+		@$(MAKE) build-packages
+		@$(MAKE) build
 
-		
+build:
+		apko build apko.yaml ${IMAGENAME}:${VERSION} netshoot.tar --ignore-signatures
+
+build-packages:
+		@for file in $(PACKAGE_YAMLS); do \
+			echo "Building $${file}..." ; \
+			melange build $${file} \
+				--arch x86_64,aarch64 \
+				--out-dir $(PACKAGES_DIR) \
+				--ignore-signatures || exit 2 ; \
+		done ;
+
+$(PACKAGE_NAMES):
+		melange build $(PACKAGES_DIR)/$@.yaml \
+			--arch x86_64,aarch64 \
+			--out-dir $(PACKAGES_DIR) \
+			--ignore-signatures
+
+clean:
+		@rm -rf packages/x86_64 packages/aarch64 netshoot.tar

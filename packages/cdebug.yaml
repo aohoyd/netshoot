@@ -1,0 +1,41 @@
+package:
+  name: cdebug
+  version: 0.0.18
+  epoch: 0
+  description: A swiss army knife of container debugging
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime: []
+  target-architecture:
+    - x86_64
+    - aarch64
+
+environment:
+  contents:
+    repositories:
+      - https://dl-cdn.alpinelinux.org/alpine/edge/main
+      - https://dl-cdn.alpinelinux.org/alpine/edge/community
+    packages:
+      - busybox
+      - ca-certificates-bundle
+      - go
+
+pipeline:
+  - uses: git-checkout
+    with:
+      repository: https://github.com/aohoyd/cdebug.git
+      branch: main
+      expected-commit: 1cf776481beea794fb9a6ace12abcc91eef69c44
+
+  - uses: go/build
+    with:
+      output: cdebug
+      packages: .
+
+update:
+  enabled: true
+  github:
+    identifier: fullstorydev/grpcurl
+    strip-prefix: v
+    use-tag: true

@@ -1,0 +1,69 @@
+contents:
+  keyring:
+    - https://packages.wolfi.dev/os/wolfi-signing.rsa.pub
+  repositories:
+    - https://packages.wolfi.dev/os
+    - '@local packages-wolfi'
+  packages:
+    - wolfi-base
+    - ca-certificates-bundle
+    - apache2-utils
+    - bash
+    - bind-tools
+    - bird
+    - conntrack-tools
+    - curl
+    - dhcping
+    - drill
+    - ethtool
+    - file
+    - fish
+    - fping
+    - iftop
+    - iperf
+    - iperf3
+    - iproute2
+    - ipset
+    - iptables
+    - iputils
+    - ipvsadm
+    - jq
+    - liboping
+    - ltrace
+    - mtr
+    - net-snmp-tools
+    - netcat-openbsd
+    - nftables
+    - ngrep
+    - nmap
+    - openssl
+    - py3-pip
+    - py3-setuptools
+    - socat
+    - openssh
+    - strace
+    - tcpdump
+    - tcptraceroute
+    - tshark
+    - util-linux
+    - xh
+    - yq
+    - git
+    - swaks
+    - duf@local
+    - dust@local
+    - grpcurl@local
+    - iptraf-ng@local
+    - scapy@local
+    - termshark@local
+    - trippy@local
+    - websocat@local
+
+archs:
+  - x86_64
+  - aarch64
+
+cmd: /bin/fish -l
+
+environment:
+  PATH: /usr/sbin:/sbin:/usr/bin:/bin
