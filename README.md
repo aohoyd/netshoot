@@ -1,37 +1,37 @@
-## netshoot: a Docker + Kubernetes network trouble-shooting swiss-army container
+## cdbg: a Docker + Kubernetes network trouble-shooting swiss-army container
 
 ```
-                    dP            dP                           dP
-                    88            88                           88
-88d888b. .d8888b. d8888P .d8888b. 88d888b. .d8888b. .d8888b. d8888P
-88'  `88 88ooood8   88   Y8ooooo. 88'  `88 88'  `88 88'  `88   88
-88    88 88.  ...   88         88 88    88 88.  .88 88.  .88   88
-dP    dP `88888P'   dP   `88888P' dP    dP `88888P' `88888P'   dP
+ ██████╗██████╗ ██████╗  ██████╗
+██╔════╝██╔══██╗██╔══██╗██╔════╝
+██║     ██║  ██║██████╔╝██║  ███╗
+██║     ██║  ██║██╔══██╗██║   ██║
+╚██████╗██████╔╝██████╔╝╚██████╔╝
+ ╚═════╝╚═════╝ ╚═════╝  ╚═════╝
 ```
 
-**Purpose:** Docker and Kubernetes network troubleshooting can become complex. With proper understanding of how Docker and Kubernetes networking works and the right set of tools, you can troubleshoot and resolve these networking issues. The `netshoot` container has a set of powerful networking troubleshooting tools that can be used to troubleshoot Docker networking issues. Along with these tools come a set of use-cases that show how this container can be used in real-world scenarios.
+**Purpose:** Docker and Kubernetes network troubleshooting can become complex. With proper understanding of how Docker and Kubernetes networking works and the right set of tools, you can troubleshoot and resolve these networking issues. The `cdbg` container has a set of powerful networking troubleshooting tools that can be used to troubleshoot Docker networking issues. Along with these tools come a set of use-cases that show how this container can be used in real-world scenarios.
 
 **Network Namespaces:** Before starting to use this tool, it's important to go over one key topic: **Network Namespaces**. Network namespaces provide isolation of the system resources associated with networking. Docker uses network and other type of namespaces (`pid`,`mount`,`user`..etc) to create an isolated environment for each container. Everything from interfaces, routes, and IPs is completely isolated within the network namespace of the container. 
 
 Kubernetes also uses network namespaces. Kubelets creates a network namespace per pod where all containers in that pod share that same network namespace (eths,IP, tcp sockets...etc). This is a key difference between Docker containers and Kubernetes pods.
 
-Cool thing about namespaces is that you can switch between them. You can enter a different container's network namespace, perform some troubleshooting on its network's stack with tools that aren't even installed on that container. Additionally, `netshoot` can be used to troubleshoot the host itself by using the host's network namespace. This allows you to perform any troubleshooting without installing any new packages directly on the host or your application's package. 
+Cool thing about namespaces is that you can switch between them. You can enter a different container's network namespace, perform some troubleshooting on its network's stack with tools that aren't even installed on that container. Additionally, `cdbg` can be used to troubleshoot the host itself by using the host's network namespace. This allows you to perform any troubleshooting without installing any new packages directly on the host or your application's package. 
 
-## Netshoot with Docker 
+## cdbg with Docker
 
-* **Container's Network Namespace:** If you're having networking issues with your application's container, you can launch `netshoot` with that container's network namespace like this:
+* **Container's Network Namespace:** If you're having networking issues with your application's container, you can launch `cdbg` with that container's network namespace like this:
 
     `$ docker run -it --net container:<container_name> nicolaka/netshoot`
 
-* **Host's Network Namespace:** If you think the networking issue is on the host itself, you can launch `netshoot` with that host's network namespace:
+* **Host's Network Namespace:** If you think the networking issue is on the host itself, you can launch `cdbg` with that host's network namespace:
 
     `$ docker run -it --net host nicolaka/netshoot`
 
 * **Network's Network Namespace:** If you want to troubleshoot a Docker network, you can enter the network's namespace using `nsenter`. This is explained in the `nsenter` section below.
 
-## Netshoot with Docker Compose
+## cdbg with Docker Compose
 
-You can easily deploy `netshoot` using Docker Compose using something like this:
+You can easily deploy `cdbg` using Docker Compose using something like this:
 
 ```
 version: "3.6"
@@ -51,7 +51,7 @@ services:
       - 80:80
 ```
 
-## Netshoot with Kubernetes
+## cdbg with Kubernetes
 
 * if you want to debug using an [ephemeral container](https://kubernetes.io/docs/tasks/debug/debug-application/debug-running-pod/#ephemeral-container-example) in an existing pod:
 
@@ -65,60 +65,60 @@ services:
 
     `$ kubectl run tmp-shell --rm -i --tty --overrides='{"spec": {"hostNetwork": true}}'  --image nicolaka/netshoot`
 
-* if you want to use netshoot as a sidecar container to troubleshoot your application container
+* if you want to use cdbg as a sidecar container to troubleshoot your application container
 
  ```
-    $ cat netshoot-sidecar.yaml
+    $ cat cdbg-sidecar.yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
-        name: nginx-netshoot
+        name: nginx-cdbg
         labels:
-            app: nginx-netshoot
+            app: nginx-cdbg
     spec:
     replicas: 1
     selector:
         matchLabels:
-            app: nginx-netshoot
+            app: nginx-cdbg
     template:
         metadata:
         labels:
-            app: nginx-netshoot
+            app: nginx-cdbg
         spec:
             containers:
             - name: nginx
             image: nginx:1.14.2
             ports:
                 - containerPort: 80
-            - name: netshoot
-            image: nicolaka/netshoot
+            - name: cdbg
+            image: aohoyd/cdbg
             command: ["/bin/bash"]
             args: ["-c", "while true; do ping localhost; sleep 60;done"]
 
-    $ kubectl apply -f netshoot-sidecar.yaml
-      deployment.apps/nginx-netshoot created
+    $ kubectl apply -f cdbg-sidecar.yaml
+      deployment.apps/nginx-cdbg created
 
     $ kubectl get pod
-NAME                              READY   STATUS    RESTARTS   AGE
-nginx-netshoot-7f9c6957f8-kr8q6   2/2     Running   0          4m27s
+NAME                          READY   STATUS    RESTARTS   AGE
+nginx-cdbg-7f9c6957f8-kr8q6   2/2     Running   0          4m27s
 
-    $ kubectl exec -it nginx-netshoot-7f9c6957f8-kr8q6 -c netshoot -- /bin/zsh
-                        dP            dP                           dP
-                        88            88                           88
-    88d888b. .d8888b. d8888P .d8888b. 88d888b. .d8888b. .d8888b. d8888P
-    88'  `88 88ooood8   88   Y8ooooo. 88'  `88 88'  `88 88'  `88   88
-    88    88 88.  ...   88         88 88    88 88.  .88 88.  .88   88
-    dP    dP `88888P'   dP   `88888P' dP    dP `88888P' `88888P'   dP
+    $ kubectl exec -it nginx-cdbg-7f9c6957f8-kr8q6 -c cdbg -- /bin/zsh
+     ██████╗██████╗ ██████╗  ██████╗
+    ██╔════╝██╔══██╗██╔══██╗██╔════╝
+    ██║     ██║  ██║██████╔╝██║  ███╗
+    ██║     ██║  ██║██╔══██╗██║   ██║
+    ╚██████╗██████╔╝██████╔╝╚██████╔╝
+     ╚═════╝╚═════╝ ╚═════╝  ╚═════╝
 
-    Welcome to Netshoot! (github.com/nicolaka/netshoot)
+    Welcome to cdbg! (github.com/aohoyd/cdbg)
 
 
-    nginx-netshoot-7f9c6957f8-kr8q6 $ 
+    nginx-cdbg-7f9c6957f8-kr8q6 $ 
  ```
 
-## The netshoot kubectl plugin
+## The cdbg kubectl plugin
 
-To easily troubleshoot networking issues in your k8s environment, you can leverage the [Netshoot Kubectl Plugin](https://github.com/nilic/kubectl-netshoot) (shout out to Nebojsa Ilic for creating it!). Using this kubectl plugin, you can easily create ephemeral `netshoot` containers to troubleshoot existing pods, k8s controller or worker nodes. To install the plugin, follow [these steps](https://github.com/nilic/kubectl-netshoot#installation).
+To easily troubleshoot networking issues in your k8s environment, you can leverage the [Netshoot Kubectl Plugin](https://github.com/nilic/kubectl-netshoot) (shout out to Nebojsa Ilic for creating it!). Using this kubectl plugin, you can easily create ephemeral `cdbg` containers to troubleshoot existing pods, k8s controller or worker nodes. To install the plugin, follow [these steps](https://github.com/nilic/kubectl-netshoot#installation).
 
 Sample Usage:
 
@@ -145,12 +145,12 @@ Many network issues could result in application performance degradation. Some of
 * firewall 
 * incomplete ARPs
 
-To troubleshoot these issues, `netshoot` includes a set of powerful tools as recommended by this diagram. 
+To troubleshoot these issues, `cdbg` includes a set of powerful tools as recommended by this diagram. 
 
 ![](http://www.brendangregg.com/Perf/linux_observability_tools.png)
 
 
-**Included Packages:** The following packages and binaries are included in `netshoot`:
+**Included Packages:** The following packages and binaries are included in `cdbg`:
 
     apache2-utils \
     bash \
@@ -295,7 +295,7 @@ $ docker run -it --net host nicolaka/netshoot
 
 ### nsenter
 
-Purpose: `nsenter` is a powerful tool allowing you to enter into any namespaces. `nsenter` is available inside `netshoot` but requires `netshoot` to be run as a privileged container. Additionally, you may want to mount the `/var/run/docker/netns` directory to be able to enter any network namespace including bridge networks.
+Purpose: `nsenter` is a powerful tool allowing you to enter into any namespaces. `nsenter` is available inside `cdbg` but requires `cdbg` to be run as a privileged container. Additionally, you may want to mount the `/var/run/docker/netns` directory to be able to enter any network namespace including bridge networks.
 
 ```
 $ docker run -it --rm -v /var/run/docker/netns:/var/run/docker/netns --privileged=true nicolaka/netshoot
@@ -356,7 +356,7 @@ $ fortio load http://www.google.com
 
 Feel free to contribute networking troubleshooting tools and use-cases by opening PRs. If you would like to add any package, please follow these steps:
 
-* In the PR, please include some rationale as to why this tool is useful to be included in netshoot. 
+* In the PR, please include some rationale as to why this tool is useful to be included in cdbg. 
      > Note: If the functionality of the tool is already addressed by an existing tool, I might not accept the PR
 * Change the Dockerfile to include the new package/tool
 * If you're building the tool from source, make sure you leverage the multi-stage build process and update the `build/fetch_binaries.sh` script 

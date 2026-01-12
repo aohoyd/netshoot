@@ -1,5 +1,5 @@
 # Build Vars
-IMAGENAME = aohoyd/netshoot
+IMAGENAME = aohoyd/cdbg
 VERSION = 0.1
 
 PACKAGES_DIR = packages
@@ -15,7 +15,7 @@ all:
 		@$(MAKE) build
 
 build:
-		apko build apko.yaml ${IMAGENAME}:${VERSION} netshoot.tar --ignore-signatures
+		apko build apko.yaml ${IMAGENAME}:${VERSION} cdbg.tar --ignore-signatures
 
 build-packages:
 		@for file in $(PACKAGE_YAMLS); do \
@@ -33,4 +33,4 @@ $(PACKAGE_NAMES):
 			--ignore-signatures
 
 clean:
-		@rm -rf packages/x86_64 packages/aarch64 netshoot.tar
+		@rm -rf packages/x86_64 packages/aarch64 cdbg.tar
