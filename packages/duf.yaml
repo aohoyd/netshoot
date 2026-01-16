@@ -41,4 +41,5 @@ update:
   enabled: true
   github:
     identifier: muesli/duf
+    strip-prefix: v
     use-tag: true

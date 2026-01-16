@@ -3,14 +3,14 @@ contents:
     - https://dl-cdn.alpinelinux.org/alpine/v3.22/main
     - https://dl-cdn.alpinelinux.org/alpine/v3.22/community
     - https://dl-cdn.alpinelinux.org/alpine/edge/testing
-    - '@local packages'
+    - "@local packages"
   packages:
     - alpine-base
     - ca-certificates-bundle
     - apache2-utils
-    - bash
     - bind-tools
     - bird
+    - busybox
     - conntrack-tools
     - curl
     - dhcping
@@ -50,7 +50,6 @@ contents:
     - tshark
     - util-linux
     - xh
-    - yq
     - git
     - swaks
     - cdebug@local
@@ -68,7 +67,7 @@ archs:
   - x86_64
   - aarch64
 
-cmd: /usr/bin/fish -l
+cmd: /usr/bin/fish
 
 work-dir: /root
 

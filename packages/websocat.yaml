@@ -1,6 +1,6 @@
 package:
   name: websocat
-  version: 1.14.0
+  version: 4.0.0
   epoch: 0
   description: Netcat, curl and socat for WebSockets
   copyright:
@@ -23,19 +23,19 @@ pipeline:
   - uses: fetch
     if: ${{build.arch}} == 'x86_64'
     with:
-      uri: https://github.com/vi/websocat/releases/download/v${{package.version}}/websocat_max.${{build.arch}}-unknown-linux-musl
+      uri: https://github.com/vi/websocat/releases/download/v${{package.version}}-alpha3/websocat.${{build.arch}}-unknown-linux-musl
       extract: false
-      expected-sha256: 8e84d1e3e62bd1cfd42e46a36454c2a58d4d8cca4baa6cb5e7dd7ba2e63cb34b
+      expected-sha256: 924a39a86c50aeb0e5374ba2098391455b7997e43c1f9a2ea1ccd7e0eeb08eec
 
   - uses: fetch
     if: ${{build.arch}} == 'aarch64'
     with:
-      uri: https://github.com/vi/websocat/releases/download/v${{package.version}}/websocat_max.${{build.arch}}-unknown-linux-musl
+      uri: https://github.com/vi/websocat/releases/download/v${{package.version}}-alpha3/websocat.${{build.arch}}-unknown-linux-musl
       extract: false
-      expected-sha256: 7b554537b7b046caf598a0db4ee95016e4d2899595c71a403d73ff5ad9f0cbed
+      expected-sha256: a4ed418b149498596a4432daeb54c0867b94030123c4f713a40d218be112e1a9
 
   - runs: |
-      install -Dm755 websocat_max.${{build.arch}}-unknown-linux-musl "${{targets.destdir}}/usr/bin/websocat"
+      install -Dm755 websocat.${{build.arch}}-unknown-linux-musl "${{targets.destdir}}/usr/bin/websocat"
 
 update:
   enabled: true

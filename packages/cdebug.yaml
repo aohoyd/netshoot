@@ -32,10 +32,3 @@ pipeline:
     with:
       output: cdebug
       packages: .
-
-update:
-  enabled: true
-  github:
-    identifier: fullstorydev/grpcurl
-    strip-prefix: v
-    use-tag: true

@@ -1,6 +1,6 @@
 package:
   name: dust
-  version: 1.2.3
+  version: 1.2.4
   epoch: 0
   description: du + rust = dust. Like du but more intuitive
   copyright:
@@ -24,13 +24,13 @@ pipeline:
     if: ${{build.arch}} == 'x86_64'
     with:
       uri: https://github.com/bootandy/dust/releases/download/v${{package.version}}/dust-v${{package.version}}-${{build.arch}}-unknown-linux-musl.tar.gz
-      expected-sha256: 2767e53a07a6f887c95d80dc7b976fbb0f85c24fa19e83704639ff5d67ebfbf4
+      expected-sha256: 4e313f9f854017e58a2ada4c0d1774677b8cf53d63ab55a991d5871d5f504452
 
   - uses: fetch
     if: ${{build.arch}} == 'aarch64'
     with:
       uri: https://github.com/bootandy/dust/releases/download/v${{package.version}}/dust-v${{package.version}}-${{build.arch}}-unknown-linux-musl.tar.gz
-      expected-sha256: 02b6db1fca7fbb2137f961619f2b1498b26cb3b3cbd3ec3cc3cf23907a354c18
+      expected-sha256: e09b0d24b5da0fa06aecf1561849c13ae41ef055c1ce7077e35e9a46744b16af
 
   - runs: |
       install -Dm755 dust "${{targets.destdir}}/usr/bin/dust"
@@ -39,4 +39,5 @@ update:
   enabled: true
   github:
     identifier: bootandy/dust
+    strip-prefix: v
     use-tag: true

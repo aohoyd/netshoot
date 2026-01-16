@@ -1,0 +1,44 @@
+package:
+  name: snitch
+  version: 0.2.2
+  epoch: 0
+  description: a friendlier ss / netstat for humans. inspect network connections with a clean tui or styled tables.
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime: []
+  target-architecture:
+    - x86_64
+    - aarch64
+
+environment:
+  contents:
+    repositories:
+      - https://dl-cdn.alpinelinux.org/alpine/edge/main
+    packages:
+      - busybox
+      - ca-certificates-bundle
+
+pipeline:
+  - uses: fetch
+    if: ${{build.arch}} == 'x86_64'
+    with:
+      uri: https://github.com/karol-broda/snitch/releases/download/v${{package.version}}/snitch_${{package.version}}_linux_amd64.tar.gz
+      strip-components: 0
+      expected-sha256: 2f96c67306bade30270fb424f462f4d00e4d33112c946fec0c4511efc6e3dce1
+
+  - uses: fetch
+    if: ${{build.arch}} == 'aarch64'
+    with:
+      uri: https://github.com/karol-broda/snitch/releases/download/v${{package.version}}/snitch_${{package.version}}_linux_arm64.tar.gz
+      strip-components: 0
+      expected-sha256: 32b486ad5ade3821783d3c4fa71531902bc33c2362c0f0aaa1ddc1ef247b190f
+
+  - runs: |
+      install -Dm755 snitch "${{targets.destdir}}/usr/bin/snitch"
+
+update:
+  enabled: true
+  github:
+    identifier: karol-broda/snitch
+    use-tag: true

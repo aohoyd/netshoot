@@ -1,6 +1,6 @@
 package:
   name: scapy
-  version: 2.6.1
+  version: 2.7.0
   epoch: 0
   description: Python-based interactive packet manipulation program and library
   copyright:
@@ -28,7 +28,7 @@ pipeline:
     with:
       repository: https://github.com/secdev/scapy
       tag: v${{package.version}}
-      expected-commit: 8e08cbf759de6709a5b4af6bea3655d293129bb4
+      expected-commit: 1de09fe85fe5c9d60ea5c6de130374e170b5bc28
 
   - uses: python/install
 
