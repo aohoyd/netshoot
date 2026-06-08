@@ -1,0 +1,40 @@
+package:
+  name: netwatch
+  version: 0.25.6
+  epoch: 0
+  description: Real-time network forensics TUI
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime: []
+  target-architecture:
+    - x86_64
+    - aarch64
+environment:
+  contents:
+    repositories:
+      - https://dl-cdn.alpinelinux.org/alpine/edge/main
+    packages:
+      - busybox
+      - ca-certificates-bundle
+pipeline:
+  - uses: fetch
+    if: ${{build.arch}} == 'x86_64'
+    with:
+      uri: https://github.com/matthart1983/netwatch/releases/download/v${{package.version}}/netwatch-linux-${{build.arch}}-static.tar.gz
+      strip-components: 0
+      expected-sha256: 08dce648cc00301abffd0208d1908f4035d06c63aeff55e9df0c6acb541df72d
+  - uses: fetch
+    if: ${{build.arch}} == 'aarch64'
+    with:
+      uri: https://github.com/matthart1983/netwatch/releases/download/v${{package.version}}/netwatch-linux-${{build.arch}}-static.tar.gz
+      strip-components: 0
+      expected-sha256: 6186884d46be8b89ccfa72ff0841065784b903f0303f25b15a955f05ff819dab
+  - runs: |
+      install -Dm755 netwatch-linux-*-static "${{targets.destdir}}/usr/bin/netwatch"
+update:
+  enabled: true
+  github:
+    identifier: matthart1983/netwatch
+    strip-prefix: v
+    use-tag: true

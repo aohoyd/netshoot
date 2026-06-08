@@ -41,4 +41,5 @@ update:
   enabled: true
   github:
     identifier: karol-broda/snitch
+    strip-prefix: v
     use-tag: true

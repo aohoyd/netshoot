@@ -363,4 +363,15 @@ Feel free to contribute networking troubleshooting tools and use-cases by openin
 * Update the README's list of included packages AND include a section on how to use the tool
 * If the tool you're adding supports multi-platform, please make sure you highlight that.
 
+## Updating packages
+
+Run `make update` to check the custom melange packages in `packages/` for newer upstream versions on GitHub. It iterates over every package YAML and runs `./update-package.sh <path/to/package.yaml>` on each (you can also run the script on a single package directly). For each package it shows the current → latest version and a compare link, then prompts `y/N`. If a package has no version set yet (e.g. one you just added), it seeds the version with the latest available release. On `y` it edits the YAML in place: it bumps the version and resets `epoch` to 0, then for fetch-based packages recomputes the per-arch `sha256`, and for git-checkout packages updates the pinned commit. Edits are atomic — on any failure the original file is restored and you see an `update failed, reverted` message.
+
+Prerequisites:
+
+* the [`gh`](https://cli.github.com) CLI, authenticated (`gh auth login`)
+* `yq`, `jq`, `curl`, and a sha256 tool (`shasum` or `sha256sum`) installed
+
+Only packages with `update.enabled: true` are processed; others (those with `update.enabled: false` or no `update:` block) print an `updates not enabled (skipping)` message and are skipped, as are packages whose latest upstream tag is non-numeric or a pre-release.
+
 

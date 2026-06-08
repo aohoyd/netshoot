@@ -26,9 +26,15 @@ pipeline:
     with:
       repository: https://github.com/aohoyd/cdebug.git
       branch: main
-      expected-commit: 1cf776481beea794fb9a6ace12abcc91eef69c44
+      expected-commit: 5606e6cb0b971f150e207b2431e7ee76c7d37411
 
   - uses: go/build
     with:
       output: cdebug
       packages: .
+
+update:
+  enabled: true
+  github:
+    identifier: aohoyd/cdebug
+    use-tag: true

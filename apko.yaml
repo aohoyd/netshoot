@@ -1,27 +1,27 @@
 contents:
   repositories:
-    - https://dl-cdn.alpinelinux.org/alpine/v3.22/main
-    - https://dl-cdn.alpinelinux.org/alpine/v3.22/community
+    - https://dl-cdn.alpinelinux.org/alpine/v3.23/main
+    - https://dl-cdn.alpinelinux.org/alpine/v3.23/community
     - https://dl-cdn.alpinelinux.org/alpine/edge/testing
-    - "@local packages"
+    - "@local out"
   packages:
     - alpine-base
     - ca-certificates-bundle
     - apache2-utils
     - bind-tools
-    - bird
+    # - bird
     - busybox
     - conntrack-tools
     - curl
     - dhcping
-    - drill
+    # - drill
     - ethtool
     - file
     - fish
     - fping
     - helix
     - iftop
-    - iperf
+    # - iperf
     - iperf3
     - iproute2
     - ipset
@@ -30,8 +30,6 @@ contents:
     - ipvsadm
     - jq
     - liboping
-    - ltrace
-    - mtr
     - net-snmp-tools
     - netcat-openbsd
     - nftables
@@ -40,8 +38,8 @@ contents:
     - nmap-nping
     - nmap-scripts
     - openssl
-    - py3-pip
-    - py3-setuptools
+    # - py3-pip
+    # - py3-setuptools
     - socat
     - openssh
     - strace
@@ -50,15 +48,17 @@ contents:
     - tshark
     - util-linux
     - xh
-    - git
-    - swaks
+    # - git
+    # - swaks
     - cdebug@local
     - config@local
     - duf@local
     - dust@local
     - grpcurl@local
-    - iptraf-ng@local
+    # - iptraf-ng@local
+    - netwatch@local
     - scapy@local
+    - snitch@local
     - termshark@local
     - trippy@local
     - websocat@local

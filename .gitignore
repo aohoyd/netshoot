@@ -1,4 +1,5 @@
 packages-*/
+out/
 APKINDEX.tar.gz
 *.apk
 *.tar
